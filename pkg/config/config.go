@@ -5,6 +5,7 @@ import "github.com/spf13/viper"
 type Config struct {
 	Port                   string `mapstructure:"PORT" default:"3001"`
 	ListingsServiceAddress string
+	AuthServiceAddress     string
 }
 
 func LoadConfig() (*Config, error) {
