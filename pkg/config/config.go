@@ -14,9 +14,9 @@ type Config struct {
 
 func LoadConfig() *Config {
 	return &Config{
-		Port:                   strings.TrimSpace(os.Getenv("PORT")),
-		ListingsServiceAddress: strings.TrimSpace(os.Getenv("LISTINGS_SERVICE_ADDRESS")),
-		AuthServiceAddress:     strings.TrimSpace(os.Getenv("AUTH_SERVICE_ADDRESS")),
-		OrderServiceAddress:    strings.TrimSpace(os.Getenv("ORDER_SERVICE_ADDRESS")),
+		Port:                   strings.TrimSuffix(os.Getenv("PORT"), "\n"),
+		ListingsServiceAddress: strings.TrimSuffix(os.Getenv("LISTINGS_SERVICE_ADDRESS"), "\n"),
+		AuthServiceAddress:     strings.TrimSuffix(os.Getenv("AUTH_SERVICE_ADDRESS"), "\n"),
+		OrderServiceAddress:    strings.TrimSuffix(os.Getenv("ORDER_SERVICE_ADDRESS"), "\n"),
 	}
 }
