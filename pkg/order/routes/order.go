@@ -2,8 +2,9 @@ package routes
 
 import (
 	"encoding/json"
-	orderpb "github.com/pandishpancheta/api-gateway-service/pkg/order/pb"
 	"net/http"
+
+	orderpb "github.com/pandishpancheta/api-gateway-service/pkg/order/pb"
 )
 
 type NewOrderRequest struct {
@@ -31,7 +32,7 @@ func CreateOrder(w http.ResponseWriter, r *http.Request, c orderpb.OrderServiceC
 		return
 	}
 
-	res, err := c.CreateOrder(r.Context(), &orderpb.NewOrderRequest{UserId: userId, ListingId: newOrderRequest.ListingId, Status: newOrderRequest.Status, TokenUri: newOrderRequest.TokenUri})
+	res, err := c.CreateOrder(r.Context(), &orderpb.NewOrderRequest{UserId: userId, ListingId: newOrderRequest.ListingId, TokenUri: newOrderRequest.TokenUri})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
