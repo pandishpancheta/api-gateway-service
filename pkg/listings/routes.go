@@ -12,8 +12,8 @@ import (
 	"github.com/pandishpancheta/api-gateway-service/pkg/listings/routes"
 )
 
-func RegisterRouters(r *mux.Router, c *config.Config, authClient authpb.AuthServiceClient) *ServiceClient {
-	client, err := InitServiceClient(c)
+func RegisterRouters(r *mux.Router, cfg *config.Config, authClient authpb.AuthServiceClient) *ServiceClient {
+	client, err := InitServiceClient(cfg)
 	if err != nil {
 		panic(err)
 	}

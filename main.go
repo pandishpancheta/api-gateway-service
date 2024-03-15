@@ -25,5 +25,5 @@ func main() {
 	order.RegisterRouters(r, cfg, authSvc.AuthClient)
 
 	// Start the server
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, r))
 }

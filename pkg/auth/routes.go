@@ -13,13 +13,13 @@ import (
 	_ "github.com/gorilla/mux"
 )
 
-func RegisterRouters(r *mux.Router, c *config.Config) *ServiceClient {
-	authClient, err := InitAuthServiceClient(c)
+func RegisterRouters(r *mux.Router, cfg *config.Config) *ServiceClient {
+	authClient, err := InitAuthServiceClient(cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	usersClient, err := InitUserServiceClient(c)
+	usersClient, err := InitUserServiceClient(cfg)
 	if err != nil {
 		panic(err)
 	}
