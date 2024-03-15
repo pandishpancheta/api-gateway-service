@@ -1,32 +1,21 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"os"
+)
 
 type Config struct {
 	Port                   string `mapstructure:"PORT" default:"3001"`
 	ListingsServiceAddress string
 	AuthServiceAddress     string
 	OrderServiceAddress    string
-	UserServiceAddress     string
 }
 
-func LoadConfig() (*Config, error) {
-	viper.AddConfigPath("envs/")
-	viper.SetConfigName("dev")
-	viper.SetConfigType("env")
-
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		return nil, err
+func LoadConfig() *Config {
+	return &Config{
+		Port:                   os.Getenv("PORT"),
+		ListingsServiceAddress: os.Getenv("LISTINGS_SERVICE_ADDRESS"),
+		AuthServiceAddress:     os.Getenv("AUTH_SERVICE_ADDRESS"),
+		OrderServiceAddress:    os.Getenv("ORDER_SERVICE_ADDRESS"),
 	}
-
-	var config Config
-
-	err := viper.Unmarshal(&config)
-	if err != nil {
-		return nil, err
-	}
-
-	return &config, nil
 }
