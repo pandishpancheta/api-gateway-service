@@ -4,7 +4,7 @@ package listings;
 
 import "google/protobuf/empty.proto";
 
-option go_package = "./pkg/pb";
+option go_package = "./pkg/listingpb";
 
 message Tag {
   string id = 1;
@@ -37,6 +37,7 @@ message CreateListingRequest {
   string price = 3;
   bytes chunk = 4;
   repeated string tag_names = 5;
+  string user_id = 6;
 }
 
 message CreateListingResponse {
@@ -69,6 +70,7 @@ message UpdateListingRequest {
   string description = 3;
   string price = 4;
   repeated string tag_names = 5;
+  string user_id = 6;
 }
 
 message UpdateListingResponse {
@@ -84,7 +86,7 @@ message UpdateListingStatusResponse {
   string id = 1;
 }
 
-
 message DeleteListingRequest {
   string id = 1;
+  string user_id = 2;
 }

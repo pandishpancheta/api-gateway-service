@@ -9,10 +9,10 @@ import (
 )
 
 type ServiceClient struct {
-	Client pb.AuthServiceClient
+	Client authpb.AuthServiceClient
 }
 
-func InitServiceClient(cfg *config.Config) (pb.AuthServiceClient, error) {
+func InitServiceClient(cfg *config.Config) (authpb.AuthServiceClient, error) {
 	creds := insecure.NewCredentials()
 	c, err := grpc.Dial(cfg.AuthServiceAddress, grpc.WithTransportCredentials(creds))
 	if err != nil {
@@ -20,5 +20,5 @@ func InitServiceClient(cfg *config.Config) (pb.AuthServiceClient, error) {
 		return nil, err
 	}
 
-	return pb.NewAuthServiceClient(c), nil
+	return authpb.NewAuthServiceClient(c), nil
 }

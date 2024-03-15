@@ -2,6 +2,7 @@ package listings
 
 import (
 	"fmt"
+	authpb "github.com/pandishpancheta/api-gateway-service/pkg/auth/pb"
 	"github.com/pandishpancheta/api-gateway-service/pkg/config"
 	"github.com/pandishpancheta/api-gateway-service/pkg/listings/pb"
 	"google.golang.org/grpc"
@@ -9,10 +10,11 @@ import (
 )
 
 type ServiceClient struct {
-	Client pb.ListingsServiceClient
+	Client     listingpb.ListingsServiceClient
+	AuthClient authpb.AuthServiceClient
 }
 
-func InitServiceClient(cfg *config.Config) (pb.ListingsServiceClient, error) {
+func InitServiceClient(cfg *config.Config) (listingpb.ListingsServiceClient, error) {
 	creds := insecure.NewCredentials()
 	c, err := grpc.Dial(cfg.ListingsServiceAddress, grpc.WithTransportCredentials(creds))
 	if err != nil {
@@ -20,5 +22,5 @@ func InitServiceClient(cfg *config.Config) (pb.ListingsServiceClient, error) {
 		return nil, err
 	}
 
-	return pb.NewListingsServiceClient(c), nil
+	return listingpb.NewListingsServiceClient(c), nil
 }

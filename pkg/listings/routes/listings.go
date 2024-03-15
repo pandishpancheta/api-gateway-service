@@ -20,7 +20,7 @@ type UpdateStatusRequest struct {
 	Status string
 }
 
-func GetAllListings(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceClient) {
+func GetAllListings(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
 	res, err := c.GetListings(r.Context(), &emptypb.Empty{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -37,12 +37,12 @@ func GetAllListings(w http.ResponseWriter, r *http.Request, c pb.ListingsService
 	w.WriteHeader(http.StatusOK)
 }
 
-func GetListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceClient) {
+func GetListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 	// Call the service
-	res, err := c.GetListing(r.Context(), &pb.GetListingRequest{Id: id})
+	res, err := c.GetListing(r.Context(), &listingpb.GetListingRequest{Id: id})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -58,8 +58,10 @@ func GetListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceClie
 	w.WriteHeader(http.StatusOK)
 }
 
-func CreateListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceClient) {
-	createListingRequest := &pb.CreateListingRequest{}
+func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
+	createListingRequest := &listingpb.CreateListingRequest{}
+
+	userID := r.Header.Get("user_id")
 
 	// Decode the request body into the CreateListingRequest
 	file, _, err := r.FormFile("image")
@@ -79,6 +81,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceC
 	createListingRequest.Name = r.FormValue("name")
 	createListingRequest.Description = r.FormValue("description")
 	createListingRequest.Price = r.FormValue("price")
+	createListingRequest.UserId = userID
 
 	// TagNames is a repeated field, so we need to loop through the form values and add them to the request
 	for _, tag := range r.Form["tag"] {
@@ -102,9 +105,11 @@ func CreateListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceC
 	w.WriteHeader(http.StatusOK)
 }
 
-func UpdateListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceClient) {
+func UpdateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
 	vars := mux.Vars(r)
 	id := vars["id"]
+
+	userID := r.Header.Get("user_id")
 
 	var body UpdateListingRequest
 
@@ -116,12 +121,13 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceC
 	}
 
 	// Call the service
-	res, err := c.UpdateListing(r.Context(), &pb.UpdateListingRequest{
+	res, err := c.UpdateListing(r.Context(), &listingpb.UpdateListingRequest{
 		Id:          id,
 		Name:        body.Name,
 		Description: body.Description,
 		Price:       body.Price,
 		TagNames:    body.TagNames,
+		UserId:      userID,
 	})
 
 	if err != nil {
@@ -134,7 +140,7 @@ func UpdateListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceC
 	json.NewEncoder(w).Encode(res)
 }
 
-func UpdateListingStatus(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceClient) {
+func UpdateListingStatus(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
@@ -148,7 +154,7 @@ func UpdateListingStatus(w http.ResponseWriter, r *http.Request, c pb.ListingsSe
 	}
 
 	// Call the service
-	res, err := c.UpdateListingStatus(r.Context(), &pb.UpdateListingStatusRequest{
+	res, err := c.UpdateListingStatus(r.Context(), &listingpb.UpdateListingStatusRequest{
 		Id:     id,
 		Status: body.Status,
 	})
@@ -163,12 +169,14 @@ func UpdateListingStatus(w http.ResponseWriter, r *http.Request, c pb.ListingsSe
 	json.NewEncoder(w).Encode(res)
 }
 
-func DeleteListing(w http.ResponseWriter, r *http.Request, c pb.ListingsServiceClient) {
+func DeleteListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
+	userId := r.Header.Get("user_id")
+
 	// Call the service
-	res, err := c.DeleteListing(r.Context(), &pb.DeleteListingRequest{Id: id})
+	res, err := c.DeleteListing(r.Context(), &listingpb.DeleteListingRequest{Id: id, UserId: userId})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

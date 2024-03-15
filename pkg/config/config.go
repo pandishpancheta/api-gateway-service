@@ -6,6 +6,7 @@ type Config struct {
 	Port                   string `mapstructure:"PORT" default:"3001"`
 	ListingsServiceAddress string
 	AuthServiceAddress     string
+	OrderServiceAddress    string
 }
 
 func LoadConfig() (*Config, error) {

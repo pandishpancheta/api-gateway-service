@@ -4,7 +4,7 @@
 // - protoc             v4.25.3
 // source: pkg/listings/pb/listings.proto
 
-package pb
+package listingpb
 
 import (
 	context "context"

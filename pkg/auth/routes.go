@@ -1,7 +1,9 @@
 package auth
 
 import (
+	"encoding/json"
 	"github.com/gorilla/mux"
+	authpb "github.com/pandishpancheta/api-gateway-service/pkg/auth/pb"
 	"github.com/pandishpancheta/api-gateway-service/pkg/auth/routes"
 	"github.com/pandishpancheta/api-gateway-service/pkg/config"
 	"net/http"
@@ -36,5 +38,33 @@ func (svc *ServiceClient) Login(writer http.ResponseWriter, request *http.Reques
 }
 
 func (svc *ServiceClient) ValidateToken(writer http.ResponseWriter, request *http.Request) {
-	routes.ValidateToken(writer, request, svc.Client)
+	ValidateToken(writer, request, svc.Client)
+}
+
+func ValidateToken(w http.ResponseWriter, r *http.Request, c authpb.AuthServiceClient) {
+
+	token := r.Header.Get("Authorization")
+
+	if token == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	token = token[7:]
+
+	res, err := c.ValidateToken(r.Context(), &authpb.ValidateTokenRequest{Jwt: token})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	r.Header.Set("user_id", res.UserId)
+
+	w.WriteHeader(http.StatusOK)
 }
