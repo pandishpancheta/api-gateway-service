@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -13,9 +14,9 @@ type Config struct {
 
 func LoadConfig() *Config {
 	return &Config{
-		Port:                   os.Getenv("PORT"),
-		ListingsServiceAddress: os.Getenv("LISTINGS_SERVICE_ADDRESS"),
-		AuthServiceAddress:     os.Getenv("AUTH_SERVICE_ADDRESS"),
-		OrderServiceAddress:    os.Getenv("ORDER_SERVICE_ADDRESS"),
+		Port:                   strings.TrimSpace(os.Getenv("PORT")),
+		ListingsServiceAddress: strings.TrimSpace(os.Getenv("LISTINGS_SERVICE_ADDRESS")),
+		AuthServiceAddress:     strings.TrimSpace(os.Getenv("AUTH_SERVICE_ADDRESS")),
+		OrderServiceAddress:    strings.TrimSpace(os.Getenv("ORDER_SERVICE_ADDRESS")),
 	}
 }
