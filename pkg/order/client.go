@@ -2,6 +2,8 @@ package order
 
 import (
 	"fmt"
+	"log"
+
 	authpb "github.com/pandishpancheta/api-gateway-service/pkg/auth/pb"
 	"github.com/pandishpancheta/api-gateway-service/pkg/config"
 	orderpb "github.com/pandishpancheta/api-gateway-service/pkg/order/pb"
@@ -16,6 +18,7 @@ type ServiceClient struct {
 
 func InitServiceClient(cfg *config.Config) (orderpb.OrderServiceClient, error) {
 	creds := insecure.NewCredentials()
+	log.Println("Connecting to order service at:", cfg.OrderServiceAddress)
 	c, err := grpc.Dial(cfg.OrderServiceAddress, grpc.WithTransportCredentials(creds))
 	if err != nil {
 		fmt.Println("Error connecting to order service:", err)

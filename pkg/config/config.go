@@ -17,6 +17,6 @@ func LoadConfig() *Config {
 		Port:                   strings.TrimSuffix(os.Getenv("PORT"), "\n"),
 		ListingsServiceAddress: strings.TrimSuffix(os.Getenv("LISTINGS_SERVICE_ADDRESS"), "\n"),
 		AuthServiceAddress:     strings.TrimSuffix(os.Getenv("AUTH_SERVICE_ADDRESS"), "\n"),
-		OrderServiceAddress:    strings.TrimSuffix(os.Getenv("ORDER_SERVICE_ADDRESS"), "\n"),
+		OrderServiceAddress:    strings.TrimSuffix(os.Getenv("ORDERS_SERVICE_ADDRESS"), "\n"),
 	}
 }
