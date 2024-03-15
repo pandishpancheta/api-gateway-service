@@ -24,11 +24,11 @@ func RegisterRouters(r *mux.Router, c *config.Config) *ServiceClient {
 	}
 
 	router := r.PathPrefix("/listings").Subrouter()
-	router.HandleFunc("/listings", svc.GetListings).Methods("GET")
-	router.HandleFunc("/listings", svc.CreateListing).Methods("POST")
-	router.HandleFunc("/listings/{id}", svc.GetListing).Methods("GET")
-	router.HandleFunc("/listings/{id}", svc.UpdateListing).Methods("PUT")
-	router.HandleFunc("/listings/{id}", svc.DeleteListing).Methods("DELETE")
+	router.HandleFunc("/", svc.GetListings).Methods("GET")
+	router.HandleFunc("/", svc.CreateListing).Methods("POST")
+	router.HandleFunc("/{id}", svc.GetListing).Methods("GET")
+	router.HandleFunc("/{id}", svc.UpdateListing).Methods("PUT")
+	router.HandleFunc("/{id}", svc.DeleteListing).Methods("DELETE")
 
 	return svc
 }

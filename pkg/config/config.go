@@ -7,6 +7,7 @@ type Config struct {
 	ListingsServiceAddress string
 	AuthServiceAddress     string
 	OrderServiceAddress    string
+	UserServiceAddress     string
 }
 
 func LoadConfig() (*Config, error) {
