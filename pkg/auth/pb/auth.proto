@@ -36,16 +36,34 @@ message AuthResponse {
 service UserService {
   rpc GetUser(GetUserRequest) returns (GetUserResponse);
   rpc GetCurrentUser(GetCurrentUserRequest) returns (GetUserResponse);
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse);
+  rpc GetUserByUsername(GetUserByUsernameRequest) returns (GetUserResponse);
   rpc DeleteCurrentUser(DeleteCurrentUserRequest) returns (EmptyResponse);
+  rpc UpdateContact(UpdateContactRequest) returns (Contact);
+}
+
+message Contact {
+  string id = 1;
+  string email = 2;
+  string phone = 3;
+  string instagram = 4;
+  string other = 5;
+}
+
+message UpdateContactRequest {
+  string id = 1;
+  string email = 2;
+  string phone = 3;
+  string instagram = 4;
+  string other = 5;
 }
 
 message GetUserRequest {
   string id = 1;
-  string jwt = 2;
 }
 
-message GetUserByEmailRequest {
-  string email = 1;
+message GetUserByUsernameRequest {
+  string username = 1;
 }
 
 message GetCurrentUserRequest {
@@ -60,6 +78,13 @@ message GetUserResponse {
   string id = 1;
   string username = 2;
   string email = 3;
+  Contact contact = 4;
+}
+
+message GetUsersRequest {}
+
+message GetUsersResponse {
+  repeated GetUserResponse users = 1;
 }
 
 message EmptyResponse {}
