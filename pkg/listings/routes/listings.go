@@ -31,9 +31,7 @@ func GetAllListings(w http.ResponseWriter, r *http.Request, c listingpb.Listings
 	// Write response as JSON to the writer
 	w.Header().Set("Content-Type", "application/json")
 
-	if err := json.NewEncoder(w).Encode(res); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
+	json.NewEncoder(w).Encode(res)
 
 	w.WriteHeader(http.StatusOK)
 }

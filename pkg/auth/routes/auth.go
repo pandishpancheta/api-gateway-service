@@ -2,6 +2,7 @@ package routes
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -55,6 +56,7 @@ func Register(w http.ResponseWriter, r *http.Request, c authpb.AuthServiceClient
 
 	res, err := c.Register(r.Context(), &authpb.RegisterRequest{Username: registerRequest.Username, Email: registerRequest.Email, Password: registerRequest.Password})
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -62,6 +64,8 @@ func Register(w http.ResponseWriter, r *http.Request, c authpb.AuthServiceClient
 	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(res); err != nil {
+		log.Println(err)
+		log.Println(res)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
