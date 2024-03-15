@@ -1,20 +1,17 @@
 package order
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/pandishpancheta/api-gateway-service/pkg/auth"
+	authpb "github.com/pandishpancheta/api-gateway-service/pkg/auth/pb"
 	"github.com/pandishpancheta/api-gateway-service/pkg/config"
 	"github.com/pandishpancheta/api-gateway-service/pkg/order/routes"
-	"net/http"
 )
 
-func RegisterRouters(r *mux.Router, c *config.Config) *ServiceClient {
+func RegisterRouters(r *mux.Router, c *config.Config, authClient authpb.AuthServiceClient) *ServiceClient {
 	client, err := InitServiceClient(c)
-	if err != nil {
-		panic(err)
-	}
-
-	authClient, err := auth.InitServiceClient(c)
 	if err != nil {
 		panic(err)
 	}
