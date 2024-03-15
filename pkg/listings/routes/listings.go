@@ -76,12 +76,11 @@ func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsS
 
 	createListingRequest.Chunk = fileBytes
 	createListingRequest.Name = r.FormValue("name")
-	createListingRequest.Description = r.FormValue("description")
 	createListingRequest.Price = r.FormValue("price")
 	createListingRequest.UserId = userID
 
 	// TagNames is a repeated field, so we need to loop through the form values and add them to the request
-	for _, tag := range r.Form["tag"] {
+	for _, tag := range r.Form["tags"] {
 		createListingRequest.TagNames = append(createListingRequest.TagNames, tag)
 	}
 
