@@ -2,43 +2,68 @@ package auth
 
 import (
 	"encoding/json"
+	"net/http"
+	_ "net/http"
+
 	"github.com/gorilla/mux"
 	authpb "github.com/pandishpancheta/api-gateway-service/pkg/auth/pb"
 	"github.com/pandishpancheta/api-gateway-service/pkg/auth/routes"
 	"github.com/pandishpancheta/api-gateway-service/pkg/config"
-	"net/http"
-	_ "net/http"
 
 	_ "github.com/gorilla/mux"
 )
 
 func RegisterRouters(r *mux.Router, c *config.Config) *ServiceClient {
-	client, err := InitServiceClient(c)
+	authClient, err := InitAuthServiceClient(c)
 	if err != nil {
 		panic(err)
 	}
-	svc := &ServiceClient{
-		Client: client,
+
+	usersClient, err := InitUserServiceClient(c)
+	if err != nil {
+		panic(err)
 	}
 
-	router := r.PathPrefix("/auth").Subrouter()
-	router.HandleFunc("/login", svc.Login).Methods("POST")
-	router.HandleFunc("/register", svc.Register).Methods("POST")
-	router.HandleFunc("/validate", svc.ValidateToken).Methods("POST")
+	svc := &ServiceClient{
+		AuthClient:  authClient,
+		UsersClient: usersClient,
+	}
+
+	auth := r.PathPrefix("/auth").Subrouter()
+	auth.HandleFunc("/login", svc.Login).Methods("POST")
+	auth.HandleFunc("/register", svc.Register).Methods("POST")
+	auth.HandleFunc("/validate", svc.ValidateToken).Methods("POST")
+
+	users := r.PathPrefix("/users").Subrouter()
+	users.HandleFunc("/{id}", svc.GetUser).Methods("GET")
+	users.HandleFunc("/", svc.GetCurrentUser).Methods("GET")
+	users.HandleFunc("/users/{id}", svc.DeleteCurrentUser).Methods("DELETE")
 
 	return svc
 }
 
 func (svc *ServiceClient) Register(writer http.ResponseWriter, request *http.Request) {
-	routes.Register(writer, request, svc.Client)
+	routes.Register(writer, request, svc.AuthClient)
 }
 
 func (svc *ServiceClient) Login(writer http.ResponseWriter, request *http.Request) {
-	routes.Login(writer, request, svc.Client)
+	routes.Login(writer, request, svc.AuthClient)
 }
 
 func (svc *ServiceClient) ValidateToken(writer http.ResponseWriter, request *http.Request) {
-	ValidateToken(writer, request, svc.Client)
+	ValidateToken(writer, request, svc.AuthClient)
+}
+
+func (svc *ServiceClient) GetUser(writer http.ResponseWriter, request *http.Request) {
+	routes.GetUser(writer, request, svc.UsersClient)
+}
+
+func (svc *ServiceClient) GetCurrentUser(writer http.ResponseWriter, request *http.Request) {
+	routes.GetCurrentUser(writer, request, svc.UsersClient)
+}
+
+func (svc *ServiceClient) DeleteCurrentUser(writer http.ResponseWriter, request *http.Request) {
+	routes.DeleteCurrentUser(writer, request, svc.UsersClient)
 }
 
 func ValidateToken(w http.ResponseWriter, r *http.Request, c authpb.AuthServiceClient) {
