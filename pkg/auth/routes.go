@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"encoding/json"
 	"net/http"
 	_ "net/http"
 
@@ -66,13 +65,13 @@ func (svc *ServiceClient) DeleteCurrentUser(writer http.ResponseWriter, request 
 	routes.DeleteCurrentUser(writer, request, svc.UsersClient)
 }
 
-func ValidateToken(w http.ResponseWriter, r *http.Request, c authpb.AuthServiceClient) {
+func ValidateToken(w http.ResponseWriter, r *http.Request, c authpb.AuthServiceClient) (string, error) {
 
 	token := r.Header.Get("Authorization")
 
 	if token == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		return
+		return "", nil
 	}
 
 	token = token[7:]
@@ -80,16 +79,9 @@ func ValidateToken(w http.ResponseWriter, r *http.Request, c authpb.AuthServiceC
 	res, err := c.ValidateToken(r.Context(), &authpb.ValidateTokenRequest{Jwt: token})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return "", err
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	return res.UserId, nil
 
-	if err := json.NewEncoder(w).Encode(res); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-
-	r.Header.Set("user_id", res.UserId)
-
-	w.WriteHeader(http.StatusOK)
 }

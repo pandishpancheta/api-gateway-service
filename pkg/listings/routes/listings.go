@@ -2,11 +2,12 @@ package routes
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"github.com/pandishpancheta/api-gateway-service/pkg/listings/pb"
-	"google.golang.org/protobuf/types/known/emptypb"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	listingpb "github.com/pandishpancheta/api-gateway-service/pkg/listings/pb"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type UpdateListingRequest struct {
@@ -58,10 +59,8 @@ func GetListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServ
 	w.WriteHeader(http.StatusOK)
 }
 
-func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
+func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient, userID string) {
 	createListingRequest := &listingpb.CreateListingRequest{}
-
-	userID := r.Header.Get("user_id")
 
 	// Decode the request body into the CreateListingRequest
 	file, _, err := r.FormFile("image")
@@ -105,11 +104,9 @@ func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsS
 	w.WriteHeader(http.StatusOK)
 }
 
-func UpdateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
+func UpdateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient, userID string) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-
-	userID := r.Header.Get("user_id")
 
 	var body UpdateListingRequest
 
@@ -169,14 +166,12 @@ func UpdateListingStatus(w http.ResponseWriter, r *http.Request, c listingpb.Lis
 	json.NewEncoder(w).Encode(res)
 }
 
-func DeleteListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
+func DeleteListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient, userID string) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	userId := r.Header.Get("user_id")
-
 	// Call the service
-	res, err := c.DeleteListing(r.Context(), &listingpb.DeleteListingRequest{Id: id, UserId: userId})
+	res, err := c.DeleteListing(r.Context(), &listingpb.DeleteListingRequest{Id: id, UserId: userID})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

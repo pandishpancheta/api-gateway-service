@@ -22,10 +22,8 @@ type UpdateStatusRequest struct {
 	Status string
 }
 
-func CreateOrder(w http.ResponseWriter, r *http.Request, c orderpb.OrderServiceClient) {
+func CreateOrder(w http.ResponseWriter, r *http.Request, c orderpb.OrderServiceClient, userId string) {
 	var newOrderRequest NewOrderRequest
-
-	userId := r.Header.Get("user_id")
 
 	if err := json.NewDecoder(r.Body).Decode(&newOrderRequest); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -47,8 +45,7 @@ func CreateOrder(w http.ResponseWriter, r *http.Request, c orderpb.OrderServiceC
 	w.WriteHeader(http.StatusOK)
 }
 
-func GetOrdersByUser(w http.ResponseWriter, r *http.Request, c orderpb.OrderServiceClient) {
-	userId := r.Header.Get("user_id")
+func GetOrdersByUser(w http.ResponseWriter, r *http.Request, c orderpb.OrderServiceClient, userId string) {
 
 	res, err := c.GetOrdersByUser(r.Context(), &orderpb.GetOrdersByUserRequest{UserId: userId})
 	if err != nil {

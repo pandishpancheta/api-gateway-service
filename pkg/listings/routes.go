@@ -34,13 +34,19 @@ func RegisterRouters(r *mux.Router, cfg *config.Config, authClient authpb.AuthSe
 }
 
 func (svc *ServiceClient) DeleteListing(writer http.ResponseWriter, request *http.Request) {
-	auth.ValidateToken(writer, request, svc.AuthClient)
-	routes.DeleteListing(writer, request, svc.Client)
+	userId, err := auth.ValidateToken(writer, request, svc.AuthClient)
+	if err != nil {
+		return
+	}
+	routes.DeleteListing(writer, request, svc.Client, userId)
 }
 
 func (svc *ServiceClient) UpdateListing(writer http.ResponseWriter, request *http.Request) {
-	auth.ValidateToken(writer, request, svc.AuthClient)
-	routes.UpdateListing(writer, request, svc.Client)
+	userId, err := auth.ValidateToken(writer, request, svc.AuthClient)
+	if err != nil {
+		return
+	}
+	routes.UpdateListing(writer, request, svc.Client, userId)
 }
 
 func (svc *ServiceClient) GetListing(writer http.ResponseWriter, request *http.Request) {
@@ -48,8 +54,11 @@ func (svc *ServiceClient) GetListing(writer http.ResponseWriter, request *http.R
 }
 
 func (svc *ServiceClient) CreateListing(writer http.ResponseWriter, request *http.Request) {
-	auth.ValidateToken(writer, request, svc.AuthClient)
-	routes.CreateListing(writer, request, svc.Client)
+	userId, err := auth.ValidateToken(writer, request, svc.AuthClient)
+	if err != nil {
+		return
+	}
+	routes.CreateListing(writer, request, svc.Client, userId)
 }
 
 func (svc *ServiceClient) GetListings(writer http.ResponseWriter, request *http.Request) {
