@@ -24,6 +24,10 @@ func main() {
 
 	order.RegisterRouters(r, cfg, authSvc.AuthClient)
 
+	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	// Start the server
 	log.Fatal(http.ListenAndServe(":"+cfg.Port, r))
 }
