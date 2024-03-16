@@ -31,6 +31,8 @@ func RegisterRouters(r *mux.Router, cfg *config.Config, authClient authpb.AuthSe
 	router.HandleFunc("/{id}", svc.UpdateListing).Methods("PUT")
 	router.HandleFunc("/{id}", svc.DeleteListing).Methods("DELETE")
 
+	r.HandleFunc("/users/{id}/listings", svc.GetListingsByUser).Methods("GET")
+
 	return svc
 }
 
@@ -66,4 +68,8 @@ func (svc *ServiceClient) CreateListing(writer http.ResponseWriter, request *htt
 
 func (svc *ServiceClient) GetListings(writer http.ResponseWriter, request *http.Request) {
 	routes.GetAllListings(writer, request, svc.Client)
+}
+
+func (svc *ServiceClient) GetListingsByUser(writer http.ResponseWriter, request *http.Request) {
+	routes.GetListingsByUser(writer, request, svc.Client)
 }

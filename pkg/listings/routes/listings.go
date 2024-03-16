@@ -37,6 +37,27 @@ func GetAllListings(w http.ResponseWriter, r *http.Request, c listingpb.Listings
 	w.WriteHeader(http.StatusOK)
 }
 
+func GetListingsByUser(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	// Call the service
+	res, err := c.GetListingsByUser(r.Context(), &listingpb.GetListingsByUserRequest{UserId: id})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Write response as JSON to the writer
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func GetListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient) {
 	vars := mux.Vars(r)
 	id := vars["id"]
