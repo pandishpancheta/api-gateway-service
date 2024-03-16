@@ -91,6 +91,22 @@ func GetUser(w http.ResponseWriter, r *http.Request, c authpb.UserServiceClient)
 	w.WriteHeader(http.StatusOK)
 }
 
+func GetUsers(w http.ResponseWriter, r *http.Request, c authpb.UserServiceClient) {
+	res, err := c.GetUsers(r.Context(), &authpb.GetUsersRequest{})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func GetCurrentUser(w http.ResponseWriter, r *http.Request, c authpb.UserServiceClient) {
 	token := r.Header.Get("Authorization")
 	token = token[7:]

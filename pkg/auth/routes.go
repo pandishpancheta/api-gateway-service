@@ -34,8 +34,9 @@ func RegisterRouters(r *mux.Router, cfg *config.Config) *ServiceClient {
 	auth.HandleFunc("/validate", svc.ValidateToken).Methods("POST")
 
 	users := r.PathPrefix("/users").Subrouter()
+	users.HandleFunc("/me", svc.GetCurrentUser).Methods("GET")
 	users.HandleFunc("/{id}", svc.GetUser).Methods("GET")
-	users.HandleFunc("/", svc.GetCurrentUser).Methods("GET")
+	users.HandleFunc("/", svc.GetUsers).Methods("GET")
 	users.HandleFunc("/users/{id}", svc.DeleteCurrentUser).Methods("DELETE")
 
 	return svc
@@ -55,6 +56,10 @@ func (svc *ServiceClient) ValidateToken(writer http.ResponseWriter, request *htt
 
 func (svc *ServiceClient) GetUser(writer http.ResponseWriter, request *http.Request) {
 	routes.GetUser(writer, request, svc.UsersClient)
+}
+
+func (svc *ServiceClient) GetUsers(writer http.ResponseWriter, request *http.Request) {
+	routes.GetUsers(writer, request, svc.UsersClient)
 }
 
 func (svc *ServiceClient) GetCurrentUser(writer http.ResponseWriter, request *http.Request) {
