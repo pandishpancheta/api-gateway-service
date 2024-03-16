@@ -3,6 +3,7 @@ package routes
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -58,12 +59,14 @@ func GetListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServ
 }
 
 func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsServiceClient, userID string) {
+	log.Println("Creating listing")
 	createListingRequest := &listingpb.CreateListingRequest{}
 
 	// Decode the request body into the CreateListingRequest
 	file, _, err := r.FormFile("image")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
 		return
 	}
 
@@ -71,6 +74,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsS
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		log.Println(err)
 		return
 	}
 
@@ -87,6 +91,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsS
 	// Call the service
 	res, err := c.CreateListing(r.Context(), createListingRequest)
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -95,6 +100,7 @@ func CreateListing(w http.ResponseWriter, r *http.Request, c listingpb.ListingsS
 	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(res); err != nil {
+		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 

@@ -1,6 +1,7 @@
 package listings
 
 import (
+	"log"
 	"net/http"
 	_ "net/http"
 
@@ -56,9 +57,11 @@ func (svc *ServiceClient) GetListing(writer http.ResponseWriter, request *http.R
 func (svc *ServiceClient) CreateListing(writer http.ResponseWriter, request *http.Request) {
 	userId, err := auth.ValidateToken(writer, request, svc.AuthClient)
 	if err != nil {
-		return
+		log.Println("Error validating token")
+		writer.WriteHeader(http.StatusUnauthorized)
+	} else {
+		routes.CreateListing(writer, request, svc.Client, userId)
 	}
-	routes.CreateListing(writer, request, svc.Client, userId)
 }
 
 func (svc *ServiceClient) GetListings(writer http.ResponseWriter, request *http.Request) {
