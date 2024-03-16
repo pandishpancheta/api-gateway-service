@@ -9,6 +9,10 @@ require (
 )
 
 require (
+	github.com/rs/cors v1.10.1 // indirect
+)
+
+require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/net v0.21.0 // indirect

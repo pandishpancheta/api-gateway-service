@@ -10,6 +10,7 @@ import (
 	"github.com/pandishpancheta/api-gateway-service/pkg/config"
 	"github.com/pandishpancheta/api-gateway-service/pkg/listings"
 	"github.com/pandishpancheta/api-gateway-service/pkg/order"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -17,7 +18,17 @@ func main() {
 	cfg := config.LoadConfig()
 
 	r := mux.NewRouter()
-	r.Use(config.AccessControlMiddleware)
+
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"},
+		AllowCredentials: true,
+	})
+
+	r.Use(func(next http.Handler) http.Handler {
+		return c.Handler(next)
+	})
 
 	authSvc := auth.RegisterRouters(r, cfg)
 
