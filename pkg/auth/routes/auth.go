@@ -126,6 +126,25 @@ func GetCurrentUser(w http.ResponseWriter, r *http.Request, c authpb.UserService
 	w.WriteHeader(http.StatusOK)
 }
 
+func GetUserByUsername(w http.ResponseWriter, r *http.Request, c authpb.UserServiceClient) {
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	res, err := c.GetUserByUsername(r.Context(), &authpb.GetUserByUsernameRequest{Username: username})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func DeleteCurrentUser(w http.ResponseWriter, r *http.Request, c authpb.UserServiceClient) {
 	token := r.Header.Get("Authorization")
 	token = token[7:]
