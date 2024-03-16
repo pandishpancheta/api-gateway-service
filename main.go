@@ -17,6 +17,7 @@ func main() {
 	cfg := config.LoadConfig()
 
 	r := mux.NewRouter()
+	r.Use(config.AccessControlMiddleware)
 
 	authSvc := auth.RegisterRouters(r, cfg)
 

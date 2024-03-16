@@ -1,6 +1,7 @@
 package config
 
 import (
+	"net/http"
 	"os"
 	"strings"
 )
@@ -19,4 +20,13 @@ func LoadConfig() *Config {
 		AuthServiceAddress:     strings.TrimSuffix(os.Getenv("AUTH_SERVICE_ADDRESS"), "\n"),
 		OrderServiceAddress:    strings.TrimSuffix(os.Getenv("ORDERS_SERVICE_ADDRESS"), "\n"),
 	}
+}
+
+func AccessControlMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+		next.ServeHTTP(w, r)
+	})
 }
