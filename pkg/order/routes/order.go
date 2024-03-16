@@ -30,7 +30,7 @@ func CreateOrder(w http.ResponseWriter, r *http.Request, c orderpb.OrderServiceC
 		return
 	}
 
-	res, err := c.CreateOrder(r.Context(), &orderpb.NewOrderRequest{UserId: userId, ListingId: newOrderRequest.ListingId, TokenUri: newOrderRequest.TokenUri})
+	res, err := c.CreateOrder(r.Context(), &orderpb.NewOrderRequest{UserId: userId, ListingId: newOrderRequest.ListingId})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
