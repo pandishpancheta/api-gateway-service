@@ -26,10 +26,6 @@ func main() {
 		AllowCredentials: true,
 	})
 
-	r.Use(func(next http.Handler) http.Handler {
-		return c.Handler(next)
-	})
-
 	authSvc := auth.RegisterRouters(r, cfg)
 
 	listings.RegisterRouters(r, cfg, authSvc.AuthClient)
@@ -40,6 +36,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
+	handler := c.Handler(r)
+
 	// Start the server
-	log.Fatal(http.ListenAndServe(":"+cfg.Port, r))
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, handler))
 }
